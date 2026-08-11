@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ICT Class 7 — Chapter 5 Quiz</title>
+<style>
+  :root{
+    --bg:#f6f5f2;
+    --card:#ffffff;
+    --ink:#1e1e1e;
+    --muted:#6b6b6b;
+    --accent:#2e6f5e;
+    --accent-light:#e5f2ee;
+    --correct:#2e7d32;
+    --correct-bg:#e8f5e9;
+    --wrong:#c62828;
+    --wrong-bg:#fdecea;
+    --border:#e2e0da;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:24px 16px 60px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  header{text-align:center;margin-bottom:24px;}
+  header h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:-0.01em;}
+  header p{color:var(--muted);margin:0;font-size:0.95rem;}
+  .toolbar{
+    display:flex;gap:10px;justify-content:center;margin:20px 0 28px;flex-wrap:wrap;
+  }
+  button{
+    font-family:inherit;
+    font-size:0.95rem;
+    padding:10px 20px;
+    border-radius:8px;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+    transition:opacity .15s;
+  }
+  button.secondary{
+    background:transparent;
+    color:var(--accent);
+  }
+  button:hover{opacity:0.85;}
+  #score-banner{
+    display:none;
+    max-width:720px;
+    margin:0 auto 20px;
+    background:var(--accent-light);
+    border:1px solid var(--accent);
+    border-radius:10px;
+    padding:14px 18px;
+    text-align:center;
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .q{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .q-title{
+    font-weight:600;
+    margin-bottom:12px;
+    line-height:1.4;
+  }
+  .q-num{color:var(--accent);margin-right:6px;}
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-radius:8px;
+    margin-bottom:4px;
+    cursor:pointer;
+    transition:background .12s;
+  }
+  .opt:hover{background:#f2f1ec;}
+  .opt input{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;}
+  .opt label{cursor:pointer;font-size:0.96rem;}
+  .q.correct{border-color:var(--correct);background:var(--correct-bg);}
+  .q.wrong{border-color:var(--wrong);background:var(--wrong-bg);}
+  .feedback{
+    display:none;
+    margin-top:10px;
+    font-size:0.88rem;
+    font-weight:600;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{color:var(--correct);}
+  .feedback.no{color:var(--wrong);}
+  footer{text-align:center;margin-top:30px;}
+  #submit-btn{font-size:1rem;padding:12px 28px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ICT Class 7 — Chapter 5</h1>
+    <p>Use of the Internet in Education — 50 Question Practice Quiz</p>
+  </header>
+
+  <div id="score-banner"></div>
+
+  <div class="toolbar">
+    <button id="submit-btn">Check My Answers</button>
+    <button class="secondary" id="reset-btn">Reset Quiz</button>
+  </div>
+
+  <form id="quiz"></form>
+
+  <div class="toolbar">
+    <button id="submit-btn-2">Check My Answers</button>
+    <button class="secondary" id="reset-btn-2">Reset Quiz</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+["Sara lost which book from her school library?",["English book","Math book","Bangla book","Science book"],2],
+["Where did Sara's father tell her she could find the textbook?",["NCTB website","Facebook","Wikipedia","YouTube"],0],
+["What is the website address of NCTB mentioned in the chapter?",["www.nctb.gov","www.nctb.gov.bd","www.nctb.com.bd","www.nctb.edu.bd"],1],
+["Akash was surprised to learn from his science textbook that:",["The Earth is round","Pluto is no longer a planet","The Sun is a star","The Moon has no water"],1],
+["Who finally helped Akash find the correct answer about Pluto?",["His teacher","His parents","The Internet","His elder brother"],2],
+["Sunaira was struggling with:",["A science project","A computer programming function","A math problem","An English essay"],1],
+["Where did Sunaira post her question to get help?",["A social media page","A language forum","A newspaper","A television programme"],1],
+["How many people replied to Sunaira's question within an hour?",["Three","Four","Five","Six"],2],
+["Ratan's friend advised him to:",["Read more books","Sit for an online test","Join a coaching centre","Watch television"],1],
+["What extra advantage does an online test have, according to the chapter?",["It is free","Incorrectly answered questions are shown on the screen","It gives a certificate","It takes less time"],1],
+["What subject does Ayesha teach at the university?",["Computer Science","Astrophysics","Fibre Optics","Mathematics"],2],
+["Ayesha found free course materials on fibre optics by:",["Asking a colleague","Browsing the internet","Reading a newspaper","Attending a seminar"],1],
+["Razib obtained his master's degree in which subject?",["Chemistry","Physics","Biology","Mathematics"],1],
+["Razib wanted to study a course in:",["Fibre Optics","Robotics","Astrophysics","Programming"],2],
+["According to the chapter, how many true events (stories) were described in Lesson 55?",["Four","Five","Six","Seven"],2],
+["What can now be obtained instantly using the Internet, which was once collected by travelling to the city?",["School admission forms","Results of public examinations","Birth certificates","Newspapers"],1],
+["Which national institution's admission process is mentioned as using the Internet by thousands of students?",["Dhaka University","National University","Medical College","Engineering University"],1],
+["What kind of classrooms are described as \"coming into being\" in universities, interconnected with each other?",["Smart classrooms","Virtual classrooms","Digital classrooms","Online classrooms"],1],
+["Students of medical colleges can watch, from a long distance, a:",["Lecture","Critical surgery","Conference","Experiment"],1],
+["A learner can watch a distant planet or star using a telescope set on:",["A tower","The peak of a mountain","A satellite","A building roof"],1],
+["The Internet is described in the chapter as a big source of:",["Entertainment","Information","Communication only","Advertisement"],1],
+["Which website is given as an example of a video-sharing site for academic lectures?",["www.facebook.com","www.youtube.com","www.google.com","www.vimeo.com"],1],
+["What do learners receive after successful completion and assessment of an online course?",["A trophy","A digital certificate","A scholarship","A printed diploma"],1],
+["Which of the following is an English-language e-learning website mentioned in the chapter?",["www.coursera.org","www.nctb.gov.bd","www.moedu.gov.bd","shikkhok.com"],0],
+["Which famous American university offers free courses through ocw.mit.edu?",["Harvard","Stanford","MIT","Yale"],2],
+["Which Bangla-language website is mentioned for taking courses in mathematics, biology, computer science, and IT?",["www.nctb.gov.bd","http://shikkhok.com","www.moedu.gov.bd","www.matholympiad.org.bd"],1],
+["What is the easiest way to find education-related information on the internet, as stated in the chapter?",["Ask a friend","Search on a search engine","Visit a library","Watch television"],1],
+["In the Google search example given in the chapter, what topic was searched?",["Pluto","Newton's Second Law","Fibre optics","Astrophysics"],1],
+["Approximately how many results appeared for the example search query in the chapter?",["1.4 million","14.3 million","143 million","1.43 billion"],1],
+["Which website is the official site of the Ministry of Education of Bangladesh?",["www.nctb.gov.bd","www.moedu.gov.bd","www.dshe.gov.bd","www.banbeis.gov.bd"],1],
+["Wikipedia is described as:",["A paid encyclopedia","The internet's largest free encyclopedia","A government website","A search engine"],1],
+["Wikipedia is available in how many languages, according to the chapter?",["Over 100","Over 150","Over 200","Over 250"],2],
+["Approximately how many articles does the English Wikipedia have, as mentioned in the chapter?",["5 million","6 million","7 million","8 million"],2],
+["Approximately how many articles does the Bangla Wikipedia have, according to the chapter?",["Over 100,000","Over 160,000","Over 200,000","Over 300,000"],1],
+["Who is the founder of Khan Academy?",["Bill Gates","Salman Khan","Mark Zuckerberg","Sundar Pichai"],1],
+["Salman Khan, the founder of Khan Academy, was born in:",["India","Bangladesh","Pakistan","USA"],1],
+["How many audiovisual files has Khan Academy made, according to the chapter?",["2400","3000","3400","4000"],2],
+["According to the chapter, Khan Academy's videos have been watched more than how many times?",["100 crore","150 crore","213 crore","250 crore"],2],
+["The Bangla-translated videos of Khan Academy are found at:",["www.khanacademy.org","bn.khanacademy.org","bangla.khanacademy.org","khanacademy.com.bd"],1],
+["The Bangla Khan Academy translations are divided into how many categories?",["Two","Three","Four","Five"],2],
+["Which website is mentioned for learning English language and is useful for learners in Bangladesh?",["www.themathdoctors.org","https://bbcjanala.ghorilearning.com","www.matholympiad.org.bd","www.learningscientists.org"],1],
+["Which website is described as helpful for algebra, geometry and calculus problems, run in association with \"Dr Math\"?",["www.themathdoctors.org","www.matholympiad.org.bd","www.w3schools.com","www.learningscientists.org"],0],
+["Who runs the website www.matholympiad.org.bd?",["NCTB officials","Teachers and volunteers of Bangladesh Mathematics Olympiad","Ministry of Education","University professors"],1],
+["Which website is mentioned for gaining practical knowledge of science subjects?",["www.learningscientists.org","www.w3schools.com","www.tutorialspoint.com","www.coursera.org"],0],
+["Which two websites are mentioned as popular for learning programming languages?",["www.coursera.org and www.edx.org","www.w3schools.com and www.tutorialspoint.com","www.khanacademy.org and www.alison.com","www.nctb.gov.bd and www.moedu.gov.bd"],1],
+["Who wrote the ancient elementary book titled \"Elements,\" available in digital form on the internet?",["Newton","Darwin","Euclid","Einstein"],2],
+["\"Principia Mathematica,\" mentioned as available online, was written by:",["Euclid","Isaac Newton","Charles Darwin","Galileo"],1],
+["\"The Origin of Species,\" mentioned as freely downloadable, was written by:",["Isaac Newton","Euclid","Charles Darwin","Albert Einstein"],2],
+["According to the chapter, digital versions of fundamental scientific books can be collected from the internet:",["At a high cost","Free of cost","Only with a subscription","Only from libraries"],1],
+["What is the overall main idea/lesson of Chapter 5?",["The Internet is dangerous for students","The Internet plays a vital role in education","Students should avoid using the internet","Only teachers should use the internet"],1]
+];
+
+const form = document.getElementById('quiz');
+questions.forEach((q,i)=>{
+  const div = document.createElement('div');
+  div.className='q';
+  div.id='q'+i;
+  let optsHtml='';
+  q[1].forEach((opt,j)=>{
+    const id='q'+i+'_o'+j;
+    optsHtml+=`<div class="opt"><input type="radio" name="q${i}" id="${id}" value="${j}"><label for="${id}">${String.fromCharCode(97+j)}) ${opt}</label></div>`;
+  });
+  div.innerHTML=`<div class="q-title"><span class="q-num">${i+1}.</span>${q[0]}</div>${optsHtml}<div class="feedback" id="fb${i}"></div>`;
+  form.appendChild(div);
+});
+
+function checkAnswers(){
+  let score=0;
+  let unanswered=0;
+  questions.forEach((q,i)=>{
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const qDiv = document.getElementById('q'+i);
+    const fb = document.getElementById('fb'+i);
+    qDiv.classList.remove('correct','wrong');
+    if(!selected){
+      unanswered++;
+      fb.className='feedback show no';
+      fb.textContent='Not answered. Correct answer: '+String.fromCharCode(97+q[2])+') '+q[1][q[2]];
+      qDiv.classList.add('wrong');
+      return;
+    }
+    const val=parseInt(selected.value);
+    if(val===q[2]){
+      score++;
+      qDiv.classList.add('correct');
+      fb.className='feedback show ok';
+      fb.textContent='Correct!';
+    }else{
+      qDiv.classList.add('wrong');
+      fb.className='feedback show no';
+      fb.textContent='Incorrect. Correct answer: '+String.fromCharCode(97+q[2])+') '+q[1][q[2]];
+    }
+  });
+  const banner=document.getElementById('score-banner');
+  banner.style.display='block';
+  banner.textContent=`Score: ${score} / ${questions.length}  (${unanswered} left unanswered)`;
+  banner.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function resetQuiz(){
+  form.reset();
+  document.querySelectorAll('.q').forEach(d=>d.classList.remove('correct','wrong'));
+  document.querySelectorAll('.feedback').forEach(f=>{f.classList.remove('show');f.textContent='';});
+  document.getElementById('score-banner').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('submit-btn').addEventListener('click',checkAnswers);
+document.getElementById('submit-btn-2').addEventListener('click',checkAnswers);
+document.getElementById('reset-btn').addEventListener('click',resetQuiz);
+document.getElementById('reset-btn-2').addEventListener('click',resetQuiz);
+</script>
+</body>
+</html>
