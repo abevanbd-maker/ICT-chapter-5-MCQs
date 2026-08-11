@@ -112,14 +112,14 @@
   <div id="score-banner"></div>
 
   <div class="toolbar">
-    <button id="submit-btn">Check My Answers</button>
+    <button id="submit-btn">View Score Summary</button>
     <button class="secondary" id="reset-btn">Reset Quiz</button>
   </div>
 
   <form id="quiz"></form>
 
   <div class="toolbar">
-    <button id="submit-btn-2">Check My Answers</button>
+    <button id="submit-btn-2">View Score Summary</button>
     <button class="secondary" id="reset-btn-2">Reset Quiz</button>
   </div>
 </div>
@@ -179,6 +179,8 @@ const questions = [
 ];
 
 const form = document.getElementById('quiz');
+let answered = {}; // tracks whether each question has been answered yet, and if correct
+
 questions.forEach((q,i)=>{
   const div = document.createElement('div');
   div.className='q';
@@ -186,55 +188,68 @@ questions.forEach((q,i)=>{
   let optsHtml='';
   q[1].forEach((opt,j)=>{
     const id='q'+i+'_o'+j;
-    optsHtml+=`<div class="opt"><input type="radio" name="q${i}" id="${id}" value="${j}"><label for="${id}">${String.fromCharCode(97+j)}) ${opt}</label></div>`;
+    optsHtml+=`<div class="opt" id="opt${i}_${j}"><input type="radio" name="q${i}" id="${id}" value="${j}"><label for="${id}">${String.fromCharCode(97+j)}) ${opt}</label></div>`;
   });
   div.innerHTML=`<div class="q-title"><span class="q-num">${i+1}.</span>${q[0]}</div>${optsHtml}<div class="feedback" id="fb${i}"></div>`;
   form.appendChild(div);
 });
 
-function checkAnswers(){
-  let score=0;
-  let unanswered=0;
-  questions.forEach((q,i)=>{
-    const selected = form.querySelector(`input[name="q${i}"]:checked`);
-    const qDiv = document.getElementById('q'+i);
-    const fb = document.getElementById('fb'+i);
-    qDiv.classList.remove('correct','wrong');
-    if(!selected){
-      unanswered++;
-      fb.className='feedback show no';
-      fb.textContent='Not answered. Correct answer: '+String.fromCharCode(97+q[2])+') '+q[1][q[2]];
-      qDiv.classList.add('wrong');
-      return;
-    }
-    const val=parseInt(selected.value);
-    if(val===q[2]){
-      score++;
-      qDiv.classList.add('correct');
-      fb.className='feedback show ok';
-      fb.textContent='Correct!';
-    }else{
-      qDiv.classList.add('wrong');
-      fb.className='feedback show no';
-      fb.textContent='Incorrect. Correct answer: '+String.fromCharCode(97+q[2])+') '+q[1][q[2]];
-    }
-  });
+function updateScoreBanner(){
+  const total = Object.keys(answered).length;
+  const correctCount = Object.values(answered).filter(v=>v).length;
   const banner=document.getElementById('score-banner');
   banner.style.display='block';
-  banner.textContent=`Score: ${score} / ${questions.length}  (${unanswered} left unanswered)`;
-  banner.scrollIntoView({behavior:'smooth',block:'center'});
+  banner.textContent=`Score so far: ${correctCount} / ${total} answered  (${questions.length - total} remaining)`;
 }
+
+function handleAnswer(i, chosenVal){
+  const q = questions[i];
+  const qDiv = document.getElementById('q'+i);
+  const fb = document.getElementById('fb'+i);
+  const isCorrect = chosenVal === q[2];
+
+  // lock this question so it can't be changed after answering
+  q[1].forEach((opt,j)=>{
+    document.getElementById(`q${i}_o${j}`).disabled = true;
+  });
+
+  qDiv.classList.remove('correct','wrong');
+  if(isCorrect){
+    qDiv.classList.add('correct');
+    fb.className='feedback show ok';
+    fb.textContent='✓ Correct!';
+  }else{
+    qDiv.classList.add('wrong');
+    fb.className='feedback show no';
+    fb.textContent='✗ Incorrect. Correct answer: '+String.fromCharCode(97+q[2])+') '+q[1][q[2]];
+    // highlight the correct option in green too
+    document.getElementById(`opt${i}_${q[2]}`).style.background = 'var(--correct-bg)';
+  }
+
+  answered[i] = isCorrect;
+  updateScoreBanner();
+}
+
+questions.forEach((q,i)=>{
+  q[1].forEach((opt,j)=>{
+    document.getElementById(`q${i}_o${j}`).addEventListener('change', ()=> handleAnswer(i, j));
+  });
+});
 
 function resetQuiz(){
   form.reset();
+  answered = {};
   document.querySelectorAll('.q').forEach(d=>d.classList.remove('correct','wrong'));
+  document.querySelectorAll('.opt').forEach(o=>o.style.background='');
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.disabled=false);
   document.querySelectorAll('.feedback').forEach(f=>{f.classList.remove('show');f.textContent='';});
   document.getElementById('score-banner').style.display='none';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-document.getElementById('submit-btn').addEventListener('click',checkAnswers);
-document.getElementById('submit-btn-2').addEventListener('click',checkAnswers);
+// "View Score Summary" buttons now just jump to / refresh the live score summary
+document.getElementById('submit-btn').addEventListener('click',()=>{ updateScoreBanner(); document.getElementById('score-banner').scrollIntoView({behavior:'smooth',block:'center'}); });
+document.getElementById('submit-btn-2').addEventListener('click',()=>{ updateScoreBanner(); document.getElementById('score-banner').scrollIntoView({behavior:'smooth',block:'center'}); });
 document.getElementById('reset-btn').addEventListener('click',resetQuiz);
 document.getElementById('reset-btn-2').addEventListener('click',resetQuiz);
 </script>
